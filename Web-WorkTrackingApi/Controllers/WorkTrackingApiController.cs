@@ -220,7 +220,8 @@ namespace Web_WorkTrackingApi.Controllers
         [HttpPut("job_post/put")]
         public ActionResult<IEnumerable<WorkTracking_JobPost>> Put(WorkTracking_JobPost jobPost)
         {
-
+            try
+            {
                 using MySqlConnection connection = new MySqlConnection(_connectionString); connection.Open();
                 using MySqlCommand command = new MySqlCommand(@"UPDATE job_post SET date=@Date, hours=@Hours, description=@Description, task_id=@TaskIndex WHERE(id=@Index);", connection);
                 command.Parameters.AddWithValue("@Index", jobPost.Index);
@@ -230,7 +231,10 @@ namespace Web_WorkTrackingApi.Controllers
                 command.Parameters.AddWithValue("@TaskIndex", jobPost.TaskIndex);
                 command.ExecuteNonQuery();
                 connection.Close();
-            return Ok(GetJobPost());
+
+                return Ok(GetJobPost());
+            }
+            catch { return BadRequest(); };
 
         }
 
